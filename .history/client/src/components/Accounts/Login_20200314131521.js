@@ -1,0 +1,81 @@
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import {login} from '../Redux/Action/authAction'
+import history from '../config/PrivateRoute/history'
+import {
+    Container
+} from 'react-bootstrap'
+
+class Login extends Component {
+    componentDidMount(){
+        if (this.props.isAuthenticated) {
+            // redirect the user
+            history.push("/")
+          }
+        }
+
+    state = {
+        user_contact: "",
+        user_password: "",
+        msg:null
+      }
+    
+    handleChange = event => {
+        this.setState({
+          [event.target.name]: event.target.value
+        });
+    }
+
+    handleSubmit = event => {
+        event.preventDefault()
+        const {user_contact, user_password} = this.state
+        const user = {
+            user_contact,
+            user_password
+        }
+        this.props.login(user)
+    }
+
+    render() {
+        const { msg } = this.props.error
+
+        return (
+            <div>
+                <Container>
+                    <h2>Login</h2>
+                    { msg && (<h6>msg</h6>)}
+                    <form onSubmit={this.handleSubmit}>
+                        <div class="form-group">
+                            <input
+                                placeholder="user contact..."
+                                name = 'user_contact'
+                                type="text" 
+                                className="form-control"
+                                value={this.state.user_contact}
+                                onChange={this.handleChange}
+                            />
+                        </div>
+                        <div class="form-group">
+                            <input
+                                type="password" 
+                                className="form-control"
+                                placeholder="user password..."
+                                name = 'user_password'
+                                value={this.state.user_password}
+                                onChange={this.handleChange}
+                                />
+                        </div>
+                        <button type="submit">Login</button>
+                    </form>
+                </Container>
+            </div>
+
+        )
+    }
+}
+
+const mapStateToProps = state => ({
+    isAuthenticated:state.authReducer.isAuthenticated,
+    error: state.errorReducer
+})
+export default connect(mapStateToProps,{login})(Login)
