@@ -4,20 +4,23 @@ import {
     AUTH_ERROR,
     USER_LOADING,
     USER_LOADED
-    // SIGNUP_SUCCESS,
-    // SIGNUP_FAILED
   } from '../Action/types'
   import axios from 'axios'
   import { returnErrors } from '../Action/errorAction'
   import history from '../../config/PrivateRoute/history'
-  import io from 'socket.io-client';
-  const socket = io('http://localhost:4000');
+
+
+  const ulrPath = 'http://localhost:4000/api/v1/'
+  const loadUsers = `${ulrPath}accounts/all`
+  const loginUsers = `${ulrPath}accounts/login`
+  const signUpUsers = `${ulrPath}accounts/register`
+
 
   export const loadUser = () => (dispatch, getState) => {
     
       dispatch({ type: USER_LOADING})
 
-      axios.get('http://localhost:4000/api/v1/accounts/all', tokenConfig(getState))
+      axios.get(loadUsers, tokenConfig(getState))
       .then(res => {dispatch({
           type:USER_LOADED,
           payload:res.data
@@ -31,27 +34,9 @@ import {
       })
   }
 
-//get all users
-export const loadAllUser = () => (dispatch, getState) => {
-    
-    dispatch({ type: USER_LOADING})
-
-    axios.get('http://localhost:4000/api/v1/accounts/allusers', tokenConfig(getState))
-    .then(res => {dispatch({
-        type:USER_LOADED,
-        payload:res.data
-    })
-  }
-    ).catch(err => {
-      //   dispatch(returnErrors(err.response.data, err.response.status))
-        dispatch({
-            type:AUTH_ERROR
-        })
-    })
-}
 
 //   login action
-export const login = ({user_contact, user_password}) => dispatch => {
+export const login = ({user_email, user_password}) => dispatch => {
     //headers
     const config = {
         headers:{
@@ -59,17 +44,16 @@ export const login = ({user_contact, user_password}) => dispatch => {
         }
     }
 
-    const body = JSON.stringify({user_contact, user_password})
+    const body = JSON.stringify({user_email, user_password})
 
     axios
-    .post('http://localhost:4000/api/v1/accounts/login', body, config)
+    .post(loginUsers, body, config)
     .then(res => {
         dispatch({
             type:LOGIN_SUCCESS,
             payload:res.data
         })
         console.log(res.data)
-        socket.emit('user_connected', user_contact);
         history.push("/")
     })
     .catch(err => {
@@ -93,19 +77,12 @@ export const signup = ({user_name, user_contact, user_email, user_password, user
     const body = JSON.stringify({user_name, user_contact, user_email, user_password, user_role})
 
     axios
-    .post('http://localhost:4000/api/v1/accounts/register', body, config)
+    .post(signUpUsers, body, config)
     .then(res => {
-        // dispatch({
-        //     type:SIGNUP_SUCCESS,
-        //     payload:res.data
-        // })
         history.push("/login")
     })
     .catch(err => {
         dispatch(returnErrors(err.response.data, err.response.status))
-        // dispatch({
-        //     type:SIGNUP_FAILED
-        // })
     })
 }
 

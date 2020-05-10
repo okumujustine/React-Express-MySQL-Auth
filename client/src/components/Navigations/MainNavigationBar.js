@@ -1,7 +1,5 @@
 
 import React, {Component, Fragment} from 'react'
-import Chat from '../Chat/Chat'
-import Join from '../Join/Join'
 import Login from '../Accounts/Login'
 import Home from '../Home/Home'
 import SignUp from '../Accounts/SignUp'
@@ -33,18 +31,17 @@ class MainNavigationBar extends Component {
 
         const afterAuthLinks = (
             <Fragment>
-                <Nav.Link to="">{user ? `welcome ${user.user_name}`:""}</Nav.Link>
-                <Link to="/chat"  className="nav-link">Chat</Link>
-                <Link to="/join"  className="nav-link">Join</Link>
+                <Nav.Link to="/Home" className="nav-link">Home</Nav.Link>
+                <Nav.Link to="">{user ? `${user.user_name}`:""}</Nav.Link>
             </Fragment>
         )
 
         return (
-            <Fragment>
+            <div>
                 <Router history={history}>
                         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top">
                             <Container>
-                                <Navbar.Brand to="/home">Airbnb</Navbar.Brand>
+                                <Navbar.Brand to="/home">MernAuth</Navbar.Brand>
                                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                                 <Navbar.Collapse id="responsive-navbar-nav">
                                     <Nav className="ml-auto">
@@ -56,14 +53,13 @@ class MainNavigationBar extends Component {
 
                         <Switch>
                             <PrivateRoute exact path = "/" component={Home}/>
-                            <PrivateRoute path="/join" component={Join} />
-                            <PrivateRoute path="/chat" component={Chat} />
                             <LoggedInProtection path = "/login" component={Login} />
+                            <LoggedInProtection path = "/Home" component={Home} />
                             <LoggedInProtection path = "/signup" component={SignUp} />
                             <Route component={NoPageFound} />
                         </Switch>
                 </Router>
-            </Fragment>
+            </div>
         )
     }
 }

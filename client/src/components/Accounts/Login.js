@@ -9,7 +9,7 @@ import {
 
 class Login extends Component {
     state = {
-        user_contact: "",
+        user_email: "",
         user_password: "",
         msg:null,
         show:true
@@ -25,9 +25,13 @@ class Login extends Component {
     handleSubmit = event => {
         event.preventDefault()
         this.setState({show:true})
-        const {user_contact, user_password} = this.state
+        const {user_email, user_password} = this.state
+        if(!user_email || !user_password){
+            alert("Fill all fields")
+            return;
+        }
         const user = {
-            user_contact,
+            user_email,
             user_password
         }
         this.props.login(user)
@@ -53,10 +57,10 @@ class Login extends Component {
                         <form onSubmit={this.handleSubmit}>
                             <Form.Group controlId="formBasicContact">
                                 <Form.Label>Contact</Form.Label>
-                                <Form.Control type="number"
-                                    placeholder="user contact..."
-                                    name = 'user_contact'
-                                    value={this.state.user_contact}
+                                <Form.Control type="email"
+                                    placeholder="user email..."
+                                    name = 'user_email'
+                                    value={this.state.user_email}
                                     onChange={this.handleChange}
                                     />
                             </Form.Group>

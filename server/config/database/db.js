@@ -5,7 +5,7 @@ const conn = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '0781459239',
-    database: 'chat'
+    database: 'MERNauthentication'
   });
   conn.connect((err) => {
     if (err){

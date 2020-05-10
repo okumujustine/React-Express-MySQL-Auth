@@ -1,0 +1,15 @@
+.body-stylings{
+    margin-top: 100px;
+}
+
+.body-stylings h5 {
+    margin-left: 100px;
+}
+
+.body-stylings button {
+    margin-left: 100px;
+    border: none;
+    border-radius: 5px;
+    background-color: #000000;
+    color: #fff;
+}

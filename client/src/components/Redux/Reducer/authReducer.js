@@ -4,8 +4,6 @@ import {
   AUTH_ERROR,
   USER_LOADING,
   USER_LOADED
-  // SIGNUP_SUCCESS,
-  // SIGNUP_FAILED
 } from '../Action/types'
 
 const initialState = {

@@ -8,6 +8,8 @@ const { doctorUserAuth, userUserAuth } = require('./verify_accounts')
 //validation imports
 const { registrationValidation } = require('./accounts_validation')
 
+
+
 router.post('/register', (req, res) => {
     let { user_name, user_contact,user_email,user_password,user_role } = req.body
     //validate user before storage
@@ -15,13 +17,13 @@ router.post('/register', (req, res) => {
     if(error) return res.status(400).send(error.details[0].message)
 
     //check if user contact already exists
-    conn.query("SELECT COUNT(*) AS contactCount FROM user_account WHERE user_contact = ? " , user_contact , (err , results) => {
+    conn.query("SELECT COUNT(*) AS emailCount FROM user_account WHERE user_email = ? " , user_email , (err , results) => {
     if(err){
         console.log(err);
     }   
     else{
-        if(results[0].contactCount > 0){  
-            res.status(400).send('User with entered contact already exist')
+        if(results[0].emailCount > 0){  
+            res.status(400).send('User with entered email address already exist')
         }else{
             //hash password before saving
             const salt = bcrypt.genSaltSync(10)
@@ -49,21 +51,21 @@ router.post('/register', (req, res) => {
 
 
 router.post('/login', (req, res) => {
-    let { user_contact,user_password } = req.body
+    let { user_email,user_password } = req.body
 
     //check if user contact already exists
-    conn.query("SELECT * FROM user_account WHERE user_contact = ? " , user_contact , (err , results) => {
+    conn.query("SELECT * FROM user_account WHERE user_email = ? " , user_email , (err , results) => {
         if(err){
             console.log(err);
         }   
         else{
             if(results.length == 0){  
-                res.status(400).send('Contact or password is wrong')
+                res.status(400).send('Email or password is wrong')
             }else{
                 //check if password is correct
                let passWordResult = bcrypt.compareSync(req.body.user_password, results[0].user_password)
                if (!passWordResult){
-                    res.status(400).send('Contact or password is wrong')
+                    res.status(400).send('Email or password is wrong')
                }else{
                    //assign an auth token
                    const token = jwt.sign({user_id:results[0].user_id, user_role:results[0].user_role,user_name:results[0].user_name, user_contact:results[0].user_contact}, process.env.LOGIN_TOKEN_SECRET_KEY)
@@ -72,7 +74,7 @@ router.post('/login', (req, res) => {
                         token,
                         user:{
                             user_id:results[0].user_id,
-                            user_contact:results[0].user_contact,
+                            user_contact:results[0].user_email,
                             user_name:results[0].user_name,
                             user_role:results[0].user_role
                         }
@@ -83,9 +85,6 @@ router.post('/login', (req, res) => {
     })
 })
 
-router.get('/doc', doctorUserAuth, (req, res) =>{
-    res.send(req.user)
-})
 
 router.get('/all', userUserAuth, (req, res) =>{
     res.send(req.user)

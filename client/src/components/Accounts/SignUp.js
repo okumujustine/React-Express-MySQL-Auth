@@ -12,9 +12,10 @@ class SignUp extends Component {
         user_contact:"",
         user_email:"",
         user_password:"",
-        user_role:"clientuser",
+        user_role:"",
         user_confirm_password:"",
-        msg:null
+        msg:null,
+        msgPaswordNotMatch:""
       }
 
     
@@ -26,7 +27,14 @@ class SignUp extends Component {
 
     handleSubmit = event => {
         event.preventDefault()
-        const {user_name,user_contact,user_email,user_password,user_role} = this.state
+        const {user_name,user_contact,user_email,user_password, user_confirm_password ,user_role} = this.state
+
+        if(user_password !== user_confirm_password){
+            this.setState({msgPaswordNotMatch:"Password must match"})
+            alert("Password must match")
+            return;
+        }
+
         const user = {
             user_name,
             user_contact,
@@ -40,6 +48,7 @@ class SignUp extends Component {
 
     render() {
         const { msg } = this.props.errorReducer
+        const { msgPaswordNotMatch } = this.state
         const errorDisplay = (
             <Fragment>
                 <div className="alert alert-danger alert-dismissible fade show" role="alert">
@@ -54,8 +63,9 @@ class SignUp extends Component {
             <Container>
                 <div className="row align-items-center h-100">
                     <div className="col-md-6 offset-md-3">
-                        <h5 className="text-center">Join Here</h5>
+                        <h5 className="text-center">Sign Up Here</h5>
                         {msg && errorDisplay}
+                        {msgPaswordNotMatch && <strong>{msgPaswordNotMatch}</strong>}
                         <form onSubmit={this.handleSubmit}>
                             <Form.Group controlId="formBasicContact">
                                 <Form.Label>Name</Form.Label>
@@ -101,6 +111,17 @@ class SignUp extends Component {
                                     value={this.state.user_confirm_password}
                                     onChange={this.handleChange}
                                     />
+                            </Form.Group>
+                            <Form.Group>
+                                <Form.Label>User Role</Form.Label>
+                                <Form.Control as="select" size="sm" 
+                                    name = 'user_role'
+                                    onChange={this.handleChange} 
+                                    value={this.state.user_role}
+                                    >
+                                        <option>Teacher</option>
+                                        <option>Student</option>
+                                </Form.Control>
                             </Form.Group>
                             <button type="submit" className="btn  btn-secondary active btn-block">Sign Up</button>
                         </form>
